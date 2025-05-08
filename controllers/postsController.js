@@ -138,26 +138,40 @@ function destroy(req, res) {
     // catch the parameter of the request
     const id = parseInt(req.params.id);
 
-    const currentPost = posts.findIndex(elem => parseInt(elem.id) === id);
+    console.log(id);
 
-    if (currentPost === -1) {
+    const sql = `DELETE FROM posts WHERE id = ?`
 
-        // return a response with json format
-        return res.status(404).json({
+    connection.query(sql, [id], err => {
 
-            status: 404,
-            error: "Not Found",
-            message: "Post not found"
-        });
-    }
+        if(err) {
 
-    posts.splice(currentPost, 1);
+            return res.status(500).json({error: 'Query error'})
+        }
 
-    // return response status code
-    res.sendStatus(204);
-    console.log('destroy test');
-    console.log('Updated posts');
-    console.log(posts);
+        res.sendStatus(204);
+    })
+
+    // const currentPost = posts.findIndex(elem => parseInt(elem.id) === id);
+
+    // if (currentPost === -1) {
+
+    //     // return a response with json format
+    //     return res.status(404).json({
+
+    //         status: 404,
+    //         error: "Not Found",
+    //         message: "Post not found"
+    //     });
+    // }
+
+    // posts.splice(currentPost, 1);
+
+    // // return response status code
+    // res.sendStatus(204);
+    // console.log('destroy test');
+    // console.log('Updated posts');
+    // console.log(posts);
 }
 
 // export all controllers
