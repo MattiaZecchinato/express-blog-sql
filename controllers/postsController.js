@@ -28,22 +28,36 @@ function show(req, res) {
 
     console.log(id);
 
-    const sql = 'SELECT * FROM posts WHERE id = ?';
+    const postSql = `SELECT * FROM posts WHERE posts.id = ?`;
 
-    connection.query(sql, [id], (err, result) => {
+    const labelTagSql = 'SELECT tags.label AS tag FROM tags JOIN post_tag ON tags.id = post_tag.tag_id WHERE post_tag.post_id = ?'
 
-        if(err) {
+    connection.query(postSql, [id], (errPost, resultPost) => {
+
+        if(errPost) {
 
             return res.status(500).json({status: '500', error: 'Query error'});
         }
 
-        if(result.length === 0) {
+        if(resultPost.length === 0) {
 
             return res.status(404).json({status: '404', error: 'Posts not found'});
         }
 
-        res.json(result);
-    })
+        let post = resultPost[0];
+
+        connection.query(labelTagSql, [id], (errTag, resultTag) => {
+
+            if(errTag) {
+
+                return res.status(500).json({status: '500', error: 'Query error'});
+            }
+
+            post.tags = resultTag;
+            res.json(post);
+        });
+
+    });
 
     // const currentPost = posts.find(elem => parseInt(elem.id) === id);
 
