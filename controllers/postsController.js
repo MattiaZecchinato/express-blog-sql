@@ -1,6 +1,9 @@
 // require posts array
 const posts = require('../data/posts.js');
 
+//require connection to blog db
+const connection = require('../data/db.js');
+
 // index
 function index(req, res) {
 
