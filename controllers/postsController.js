@@ -13,7 +13,7 @@ function index(req, res) {
 
         if(err) {
 
-            return res.status(500).json({error: 'Query error'})
+            return res.status(500).json({status: '500', error: 'Query error'});
         }
 
         res.status(200).json(result);
@@ -26,24 +26,43 @@ function show(req, res) {
     // catch the parameter of the request
     const id = parseInt(req.params.id);
 
-    const currentPost = posts.find(elem => parseInt(elem.id) === id);
+    console.log(id);
 
-    // error catch
-    if (!currentPost) {
+    const sql = 'SELECT * FROM posts WHERE id = ?';
 
-        // return a response with json format
-        return res.status(404).json({
+    connection.query(sql, [id], (err, result) => {
 
-            status: 404,
-            error: "Not Found",
-            message: "Post not found"
-        });
-    }
+        if(err) {
 
-    // return a response with json format
-    res.send(currentPost);
+            return res.status(500).json({status: '500', error: 'Query error'});
+        }
 
-    console.log('show test');
+        if(result.length === 0) {
+
+            return res.status(404).json({status: '404', error: 'Posts not found'});
+        }
+
+        res.json(result);
+    })
+
+    // const currentPost = posts.find(elem => parseInt(elem.id) === id);
+
+    // // error catch
+    // if (!currentPost) {
+
+    //     // return a response with json format
+    //     return res.status(404).json({
+
+    //         status: 404,
+    //         error: "Not Found",
+    //         message: "Post not found"
+    //     });
+    // }
+
+    // // return a response with json format
+    // res.send(currentPost);
+
+    // console.log('show test');
 }
 
 // store
@@ -146,32 +165,11 @@ function destroy(req, res) {
 
         if(err) {
 
-            return res.status(500).json({error: 'Query error'})
+            return res.status(500).json({status: '500', error: 'Query error'});
         }
 
         res.sendStatus(204);
     })
-
-    // const currentPost = posts.findIndex(elem => parseInt(elem.id) === id);
-
-    // if (currentPost === -1) {
-
-    //     // return a response with json format
-    //     return res.status(404).json({
-
-    //         status: 404,
-    //         error: "Not Found",
-    //         message: "Post not found"
-    //     });
-    // }
-
-    // posts.splice(currentPost, 1);
-
-    // // return response status code
-    // res.sendStatus(204);
-    // console.log('destroy test');
-    // console.log('Updated posts');
-    // console.log(posts);
 }
 
 // export all controllers
