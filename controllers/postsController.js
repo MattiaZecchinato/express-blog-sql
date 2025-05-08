@@ -7,27 +7,17 @@ const connection = require('../data/db.js');
 // index
 function index(req, res) {
 
-    // catch the query of the request
-    const tag = req.query.tag;
+    const sql = 'SELECT * FROM posts';
 
-    console.log(tag);
+    connection.query(sql, (err, result) => {
 
-    if (tag) {
+        if(err) {
 
-        const tagPosts = posts.filter(elem => 
+            return res.status(500).json({error: 'Query error'})
+        }
 
-            elem.tags.find(currentTag => currentTag.toLowerCase() === tag.toLowerCase()) !== undefined
-        );
-
-        console.log(tagPosts);
-
-        // return a response with json format
-        return res.json(tagPosts);
-    }
-
-    // return a response with json format
-    res.json(posts);
-    console.log('index test');
+        res.status(200).json(result);
+    })
 }
 
 // show

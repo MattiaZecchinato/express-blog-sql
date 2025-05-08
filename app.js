@@ -38,5 +38,5 @@ app.use(notFound);
 // server active ready for request on a specific port
 app.listen(port, () => {
 
-    console.log('listen');
+    console.log(`listen on port:${port}`);
 });
